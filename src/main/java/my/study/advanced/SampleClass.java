@@ -1,6 +1,6 @@
 package my.study.advanced;
 
-@InheritableAnnotation
+@SimpleAnnotation
 public class SampleClass {
 
 }

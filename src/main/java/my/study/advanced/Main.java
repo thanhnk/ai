@@ -1,11 +1,12 @@
 package my.study.advanced;
 
+import javax.lang.model.SourceVersion;
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -42,47 +43,9 @@ public class Main extends ConcurrentUtils {
     }
 
     public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
-
-        //Main main = new Main();
-        //main.run();
-
-        ExecutorService executor = Executors.newFixedThreadPool(2);
-        Map<String, String> map = new HashMap<>();
-        StampedLock lock = new StampedLock();
-
-        executor.submit(() -> {
-            long stamp = lock.writeLock();
-            try {
-                sleep(1);
-                map.put("foo", "bar");
-                map.put("foo2", "bar2");
-            } finally {
-                lock.unlockWrite(stamp);
-            }
-        });
-
-        Runnable readTask = () -> {
-            long stamp = lock.readLock();
-            try {
-                System.out.println(map.get("foo"));
-                sleep(2);
-            } finally {
-                lock.unlockRead(stamp);
-            }
-
-            long stamp2 = lock.readLock();
-            try {
-                System.out.println(map.get("foo2"));
-                sleep(2);
-            } finally {
-                lock.unlockRead(stamp2);
-            }
-        };
-
-        executor.submit(readTask);
-        executor.submit(readTask);
-
-        stop(executor);
-
+        final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        for( final SourceVersion version: compiler.getSourceVersions() ) {
+            System.out.println( version );
+        }
     }
 }

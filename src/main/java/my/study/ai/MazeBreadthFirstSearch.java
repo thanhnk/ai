@@ -5,19 +5,19 @@ import java.awt.*;
 import java.awt.image.*;
 
 /**
- * Created by thanh on 11/19/16.
+ * Created by thanh on 11/27/16.
  */
-public class MazeDepthFirstSearch extends javax.swing.JFrame {
+public class MazeBreadthFirstSearch extends javax.swing.JFrame {
     JPanel jPanel1 = new JPanel();
-    DepthFirstSearchEngine currentSearchEngine = null;
+    BreadthFirstSearchEngine currentSearchEngine = null;
 
-    public MazeDepthFirstSearch() {
+    public MazeBreadthFirstSearch() {
         try {
             jbInit();
         } catch (Exception e) {
             System.out.println("GUI initilization error: " + e);
         }
-        currentSearchEngine = new DepthFirstSearchEngine(10, 10);
+        currentSearchEngine = new BreadthFirstSearchEngine(10, 10);
         repaint();
     }
 
@@ -33,15 +33,17 @@ public class MazeDepthFirstSearch extends javax.swing.JFrame {
         g2.setColor(Color.white);
         g2.fillRect(0, 0, 320, 320);
         g2.setColor(Color.black);
+        maze.setValue(0, 0, Maze.START_LOC_VALUE);
         for (int x=0; x<width; x++) {
             for (int y=0; y<height; y++) {
                 int val = maze.getValue(x,y);
+
                 if ( val == Maze.OBSTACLE) {
                     g2.setColor(Color.lightGray);
                     g2.fillRect(6 + x * 29, 3 + y * 29, 29, 29);
                     g2.setColor(Color.black);
                     g2.drawRect(6 + x * 29, 3 + y * 29, 29, 29);
-                } else if (val == Maze.START_LOC_VALUE || val == 1) {
+                } else if (val == Maze.START_LOC_VALUE) {
                     g2.setColor(Color.blue);
                     g2.drawString("S", 16 + x * 29, 19 + y * 29);
                     g2.setColor(Color.black);
@@ -60,18 +62,18 @@ public class MazeDepthFirstSearch extends javax.swing.JFrame {
         // redraw the path in black:
         g2.setColor(Color.black);
         Location [] path = currentSearchEngine.getPath();
-        for (int i=1; i< path.length; i++) {
+        for (int i=1; i< (path.length-1); i++) {
             int x = path[i].x;
             int y = path[i].y;
             int val = maze.getValue(x,y);
-            g2.drawString("" + val, 16 + x * 28, 19 + y * 29);
+            g2.drawString("" + (path.length - i), 16 + x * 29, 19 + y * 29);
         }
         g.drawImage(image, 30, 40, 320, 320, null);
 
     }
 
     public static void main(String[] args) {
-        new MazeDepthFirstSearch();
+        new MazeBreadthFirstSearch();
     }
 
     private void jbInit() throws Exception {
@@ -79,7 +81,7 @@ public class MazeDepthFirstSearch extends javax.swing.JFrame {
         this.setContentPane(jPanel1);
         this.setCursor(null);
         this.setDefaultCloseOperation(3);
-        this.setTitle("MazeDepthFirstSearch");
+        this.setTitle("MazeBreadthFirstSearch");
         this.getContentPane().setLayout(null);
         jPanel1.setBackground(Color.white);
         jPanel1.setDebugGraphicsOptions(DebugGraphics.NONE_OPTION);
